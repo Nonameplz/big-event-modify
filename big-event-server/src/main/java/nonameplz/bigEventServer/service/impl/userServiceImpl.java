@@ -5,6 +5,7 @@ import nonameplz.bigEventServer.mapper.userMapper;
 import nonameplz.bigEventServer.pojo.token;
 import nonameplz.bigEventServer.pojo.user;
 import nonameplz.bigEventServer.service.userService;
+import nonameplz.bigEventServer.utils.randomStringGetter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,15 +24,9 @@ public class userServiceImpl implements userService {
         if (uMapper.register_isExist(u) != null) {
             return false;
         } else {
-            long time = System.currentTimeMillis();
-            int random = (int) (Math.random() * Integer.MAX_VALUE);
-            UUID uuid = new UUID(time, random);
-
-            u.setUserUUID(uuid.toString());
+            u.setUserUUID(randomStringGetter.generateUUIDRandom());
             u.setPhoneNumber(null);
             u.setUserImageURL(null);
-            u.setCreateTime(LocalDateTime.now());
-            u.setUpdateTime(LocalDateTime.now());
             uMapper.register(u);
             return true;
         }
@@ -60,6 +55,12 @@ public class userServiceImpl implements userService {
     @Override
     public void updateUserToken(token t) {
         tMapper.updateUserToken(t);
+    }
+
+    @Override
+    public boolean checkToken(String token) {
+        token t = tMapper.getToken(token);
+        return t != null && !t.getExpireTime().isBefore(LocalDateTime.now());
     }
 
 

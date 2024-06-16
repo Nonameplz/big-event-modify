@@ -19,7 +19,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/my/userinfo")
 @CrossOrigin(origins = "*")
-public class getUserController {
+public class userController {
 
     @Autowired
     private userService uService;

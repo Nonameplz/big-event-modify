@@ -26,6 +26,14 @@ public class JwtUtils {
         return jwt;
     }
 
+    public static String generateJwtNoExp(Map<String, Object> claims){
+        String jwt = Jwts.builder()
+                .addClaims(claims)
+                .signWith(SignatureAlgorithm.HS256, signKey)
+                .compact();
+        return jwt;
+    }
+
     /**
      * 解析JWT令牌
      * @param jwt JWT令牌

@@ -15,4 +15,6 @@ public interface userService {
     public void saveUserToken(token t);
 
     public void updateUserToken(token t);
+
+    public boolean checkToken(String token);
 }

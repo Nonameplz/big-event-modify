@@ -11,10 +11,12 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class article {
     private String userUUID;
+    private String articleUID;
     private String title;
     private String description;
     private String content;
     private String category;
+    private Integer isPublish;
     private Integer likes;
     private LocalDateTime CreateTime;
     private LocalDateTime ModifyTime;

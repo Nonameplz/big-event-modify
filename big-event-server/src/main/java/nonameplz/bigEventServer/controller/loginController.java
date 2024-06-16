@@ -5,6 +5,7 @@ import nonameplz.bigEventServer.pojo.Result;
 import nonameplz.bigEventServer.pojo.token;
 import nonameplz.bigEventServer.pojo.user;
 import nonameplz.bigEventServer.service.userService;
+import nonameplz.bigEventServer.utils.randomStringGetter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +31,7 @@ public class loginController {
             if (t == null){
                 //用户从未登录过时
                 t = new token();
-                t.setToken(token.generateTokenByShuffle());
+                t.setToken(randomStringGetter.generateTokenByShuffle());
                 t.setUserUUID(logUser.getUserUUID());
                 t.setExpireTime(LocalDateTime.now().plusDays(7));
                 t.setCreateTime(LocalDateTime.now());
@@ -41,7 +42,7 @@ public class loginController {
             }
             if(t.getExpireTime().isBefore(LocalDateTime.now())) {
                 //用户token过期
-                t.setToken(token.generateTokenByShuffle());
+                t.setToken(randomStringGetter.generateTokenByShuffle());
                 t.setExpireTime(LocalDateTime.now().plusDays(7));
                 t.setCreateTime(LocalDateTime.now());
 

@@ -13,10 +13,11 @@ public interface userMapper {
     user register_isExist(user u);
 
     @Insert("insert into big_event_database.users(userUUID, userName, userPassword, email, userImageURL,createTime, modifyTime) " +
-            "values(#{userUUID},#{userName},#{password},#{email},#{userImageURL},#{createTime},#{updateTime})")
+            "values(#{userUUID},#{userName},#{password},#{email},#{userImageURL},NOW(),NOW())")
     void register(user u);
 
     @Select("select * from big_event_database.users where userName = #{userName} and userPassword = #{password}")
     user userLogin(user u);
+
 
 }
