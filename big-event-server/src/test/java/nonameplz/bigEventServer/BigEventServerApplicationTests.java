@@ -12,10 +12,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,35 +38,45 @@ class BigEventServerApplicationTests {
 	}
 
 	@Test
-	void testRandomToken(){
+	void testRandomToken() {
 		System.out.println(randomStringGetter.generateTokenByShuffle());
 	}
 
 	@Test
-	void testUUIDGet(){
+	void testUUIDGet() {
 		System.out.println(randomStringGetter.generateUUIDRandom());
 	}
 
 	@Test
-	void testFastJSON(){
+	void testFastJSON() {
 		System.out.println(LocalDateTime.now());
 		System.out.println(JSON.toJSONString(LocalDateTime.now()));
 	}
 
 	@Test
-	void testPageBean(){
-		pageBean pagebean = aService.getArticlesSelected(1,10,"0000018f-d4ac-f81e-0000-00003e6fa0db","all","all");
-        var rows = pagebean.getRows();
+	void testPageBean() {
+		pageBean pagebean = aService.getArticlesSelected(1, 10, "0000018f-d4ac-f81e-0000-00003e6fa0db", "all", "all");
+		var rows = pagebean.getRows();
 		for (Object row : rows) {
-			System.out.println(((article)row).getArticleUID());
-			System.out.println(((article)row).toString());
+			System.out.println(((article) row).getArticleUID());
+			System.out.println(((article) row).toString());
 		}
 	}
+
 	@Test
 	void testUpload() throws IOException, ClientException {
-		MultipartFile file = new MockMultipartFile("file", "test.txt", "text/plain", "hello".getBytes());
-		aliOSSUtils.setBucketName("image-container");
-		String url=aliOSSUtils.upload(file);
-		System.out.println(url);
+		String filePath = "src/main/resources/static/testResource.png";
+		File file = new File(filePath);
+		FileInputStream input = new FileInputStream(file);
+		String dir = "img-cover/";
+
+		MultipartFile multipartFile = new MockMultipartFile(
+				file.getName(),         // 文件名
+				file.getName(),         // 原始文件名
+				MediaType.IMAGE_PNG.toString(), // 文件类型
+				input                   // 文件流
+		);
+		String url = aliOSSUtils.upload(multipartFile, dir);
+		log.info(url);
 	}
 }

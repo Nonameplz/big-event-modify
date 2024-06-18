@@ -41,6 +41,22 @@ public class articleServiceImpl implements articleService {
     }
 
     @Override
+    public void publishArticle(String userUUID, String title, String category, String description, String coverImage, String content, String state) {
+        article article = new article();
+        article.setUserUUID(userUUID);
+        article.setArticleUID(randomStringGetter.generateUUIDRandom());
+        article.setTitle(title);
+        article.setCategory(category);
+        article.setDescription(description);
+        article.setCoverImage(coverImage);
+        article.setContent(content);
+        article.setIsPublish(state.equals("已发布")?1:0);
+        article.setLikes(0);
+
+        aMapper.publishArticle(article);
+    }
+
+    @Override
     public void addArticle(String userUUID, article article) {
         article.setUserUUID(userUUID);
         article.setArticleUID(randomStringGetter.generateUUIDRandom());

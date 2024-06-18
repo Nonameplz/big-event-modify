@@ -9,7 +9,7 @@ public interface articleService {
 
     public List<article> getArticles(String userUUID);
 
-    public pageBean getArticlesSelected(Integer pageNum, Integer pageSize,String userUUID, String category, String state);
+    public pageBean getArticlesSelected(Integer pageNum, Integer pageSize, String userUUID, String category, String state);
 
     public void addArticle(String userUUID, article article);
 
@@ -18,4 +18,6 @@ public interface articleService {
     public void deleteArticle(String userUUID, String articleUID);
 
     public List<String> getArticleCategory(String userUUID);
+
+    public void publishArticle(String userUUID, String title, String category, String description, String coverImage, String content, String state);
 }

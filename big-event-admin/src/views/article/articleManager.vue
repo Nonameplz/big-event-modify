@@ -7,6 +7,7 @@ import { jwtDecode } from 'jwt-decode'
 import ChannelSelect from '@/views/article/components/ChannelSelect.vue'
 import ArticleEdit from '@/views/article/components/ArticleEdit.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { zhCn } from 'element-plus/es/locale/index'
 
 const isLoading = ref(false)
 const articleList = ref([])
@@ -72,13 +73,7 @@ const onDeleteArticle = async (row) => {
   await getArticles(selectForm.value)
 }
 
-const onSuccess = (type) => {
-  if (type === 'add') {
-    // 如果是添加，需要跳转渲染最后一页，编辑直接渲染当前页
-    selectForm.value.pagenum = Math.ceil(
-      (total.value + 1) / selectForm.value.pageSize
-    )
-  }
+const onSuccess = () => {
   getArticleList()
 }
 </script>
@@ -139,17 +134,19 @@ const onSuccess = (type) => {
         <el-empty description="没有数据" />
       </template>
     </el-table>
-    <el-pagination
-      v-model:current-page="selectForm.pageNum"
-      v-model:page-size="selectForm.pageSize"
-      :page-sizes="[5, 10, 15, 20]"
-      :background="true"
-      layout="jumper ,total, sizes, prev, pager, next"
-      :total="total"
-      @size-change="onSizeChange"
-      @current-change="onCurrentChange"
-      style="margin: 20px 5px; justify-content: flex-end"
-    />
+    <el-config-provider :locale="zhCn">
+      <el-pagination
+        v-model:current-page="selectForm.pageNum"
+        v-model:page-size="selectForm.pageSize"
+        :page-sizes="[5, 10, 15, 20]"
+        :background="true"
+        layout="jumper ,total, sizes, prev, pager, next"
+        :total="total"
+        @size-change="onSizeChange"
+        @current-change="onCurrentChange"
+        style="margin: 20px 5px; justify-content: flex-end"
+      />
+    </el-config-provider>
 
     <article-edit ref="articleEditRef" @success="onSuccess"></article-edit>
   </page-container>

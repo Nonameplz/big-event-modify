@@ -23,4 +23,8 @@ public interface articleMapper {
 
     @Select("select DISTINCT category from big_event_database.article where userUUID =#{userUUID}")
     List<String> getCategories(String userUUID);
+
+    @Insert("insert into big_event_database.article(userUUID, articleUID, title, description,coverImage, content, category, isPublish,createTime, modifyTime) " +
+            "values(#{userUUID},#{articleUID},#{title},#{description},#{coverImage},#{content},#{category},#{isPublish},NOW(),NOW())")
+    void publishArticle(article article);
 }

@@ -23,7 +23,7 @@ import java.util.Map;
 
 @Slf4j
 @RestController
-@RequestMapping("my/cate/")
+@RequestMapping("my/article/")
 @CrossOrigin(origins = "*")
 public class articleController {
 
@@ -107,11 +107,22 @@ public class articleController {
         return Result.success(categories);
     }
 
-    @PostMapping
-    public Result publishArticle(@RequestHeader HttpHeaders headers, @RequestBody article article, @RequestBody MultipartFile image) throws IOException, ClientException {
-        log.info("上传图片:{}",image.getOriginalFilename());
-        aliOSSUtils.setBucketName("image-container");
-        article.setCoverImage(aliOSSUtils.upload(image));
+    @PostMapping("/add")
+    public Result publishArticle(@RequestHeader HttpHeaders headers,
+                                 @RequestParam("title") String title,
+                                 @RequestParam("category") String category,
+                                 @RequestParam("description") String description,
+                                 @RequestParam("cover_image") MultipartFile cover_image,
+                                 @RequestParam("content") String content,
+                                 @RequestParam("state") String state
+    ) throws IOException {
+        log.info("上传图片:{}", cover_image.getOriginalFilename());
+        String dir = "img-cover/";
+        String url = aliOSSUtils.upload(cover_image, dir);
+        log.info(url);
+        log.info("{}", url.length());
+
+        aService.publishArticle(uService.getUserByToken(headers.getFirst("Authorization")).getUserUUID(), title, category, description, url, content, state);
         return Result.success();
     }
 

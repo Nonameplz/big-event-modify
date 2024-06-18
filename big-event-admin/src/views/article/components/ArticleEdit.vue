@@ -6,6 +6,7 @@ import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
 import { artPublishService } from '@/api/article.js'
 import { ElMessage } from 'element-plus'
+
 const visibleDrawer = ref(false)
 
 const formModel = ref({
@@ -13,7 +14,7 @@ const formModel = ref({
   title: '',
   category: '',
   description: '',
-  coverImage: '',
+  cover_image: '',
   content: '',
   state: ''
 })
@@ -49,18 +50,17 @@ const imgUrl = ref('')
 const editorRef = ref()
 const onUploadFile = (uploadFile) => {
   imgUrl.value = URL.createObjectURL(uploadFile.raw)
-  formModel.value.coverImage = uploadFile.raw
+  formModel.value.cover_image = uploadFile.raw
 }
 
 const open = (row) => {
   visibleDrawer.value = true
   formModel.value = { ...row }
   if (!row.articleUID) {
-    formModel.value.coverImage = ''
+    formModel.value.cover_Image = ''
     formModel.value.content = ''
   }
   imgUrl.value = ''
-  editorRef.value.setHTML('')
 }
 
 const emit = defineEmits(['success'])
@@ -68,21 +68,25 @@ const onPublish = async (state) => {
   // 将已发布还是草稿状态，存入 state
   formModel.value.state = state
 
-  // 转换 formData 数据
-  const fd = new FormData()
+  // // 转换 formData 数据
+  const formData = new FormData()
+
+  // 将formDataRef.value的属性和值添加到FormData中
   for (let key in formModel.value) {
-    fd.append(key, formModel.value[key])
+    formData.append(key, formModel.value[key])
   }
 
   if (formModel.value.articleUID) {
     console.log('编辑操作')
   } else {
     // 添加请求
-    await artPublishService(fd)
+    await artPublishService(formData)
     ElMessage.success('添加成功')
     visibleDrawer.value = false
     emit('success', 'add')
   }
+  imgUrl.value = ''
+  editorRef.value.setHTML('')
 }
 defineExpose({
   open
@@ -137,8 +141,8 @@ defineExpose({
       <el-form-item label="文章内容" prop="content">
         <div class="editor">
           <quill-editor
-            ref="editorRef"
             theme="snow"
+            ref="editorRef"
             v-model:content="formModel.content"
             contentType="html"
           >
