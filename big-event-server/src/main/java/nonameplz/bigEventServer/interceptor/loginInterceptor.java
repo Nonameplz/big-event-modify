@@ -22,10 +22,10 @@ public class loginInterceptor implements HandlerInterceptor {
 
         String url = request.getRequestURI();
 
-        log.info("请求路径为:{}",url);
+//        log.info("请求路径为:{}",url);
 
         String token = request.getHeader("Authorization");
-        log.info("请求头为{}",token);
+//        log.info("请求头为{}",token);
 
         if (!StringUtils.hasLength(token)) {
             log.info("token不存在");

@@ -17,10 +17,8 @@ spring:
 
 aliyun:
   oss:
-    endpoint: https://oss-cn-beijing.aliyuncs.com"
-    accessKeyId: LTAI5tJB6Vc8LfT993Kd37N4
-    accessKeySecret: JkV5wMcCBv2rZpZGue7Q0gw1Q6krFC
-    bucketName: web-image-container
+    endpoint: https://oss-cn-shanghai.aliyuncs.com
+    bucketName: image-container
 
 #spring??????
 logging:

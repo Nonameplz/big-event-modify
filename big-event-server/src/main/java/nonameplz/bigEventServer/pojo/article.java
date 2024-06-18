@@ -14,6 +14,7 @@ public class article {
     private String articleUID;
     private String title;
     private String description;
+    private String coverImage;
     private String content;
     private String category;
     private Integer isPublish;

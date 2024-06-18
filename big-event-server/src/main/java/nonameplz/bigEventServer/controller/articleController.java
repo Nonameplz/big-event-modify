@@ -1,16 +1,21 @@
 package nonameplz.bigEventServer.controller;
 
+import com.aliyuncs.exceptions.ClientException;
 import lombok.extern.slf4j.Slf4j;
 import nonameplz.bigEventServer.pojo.Result;
 import nonameplz.bigEventServer.pojo.article;
+import nonameplz.bigEventServer.pojo.pageBean;
 import nonameplz.bigEventServer.pojo.user;
 import nonameplz.bigEventServer.service.articleService;
 import nonameplz.bigEventServer.service.userService;
+import nonameplz.bigEventServer.utils.AliOSSUtils;
 import nonameplz.bigEventServer.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,30 +31,47 @@ public class articleController {
     private articleService aService;
     @Autowired
     private userService uService;
+    @Autowired
+    private AliOSSUtils aliOSSUtils;
 
     @GetMapping("/list")
-    public Result getArticles(@RequestHeader HttpHeaders headers) {
+    public Result getArticles(@RequestHeader HttpHeaders headers,
+                              @RequestParam(defaultValue = "0") Integer pageNum,
+                              @RequestParam(defaultValue = "-1") Integer pageSize,
+                              @RequestParam(defaultValue = "all") String category,
+                              @RequestParam(defaultValue = "all") String state
+    ) {
+        log.info("查询第{}页的{}条数据:筛选类别为{},发布状态为{}", pageNum, pageSize == -1 ? "all" : pageSize, category, state);
         String token = headers.getFirst("Authorization");
         user u = uService.getUserByToken(token);
-        List<article> articles=aService.getArticles(u.getUserUUID());
-
         List<String> articleCategoryJwt = new ArrayList<>();
-        for (article article : articles) {
-            Map<String, Object> claim=new HashMap<>();
-            claim.put("articleUID", article.getArticleUID());
-            claim.put("title", article.getTitle());
-            claim.put("description",article.getDescription());
-            claim.put("category",article.getCategory());
-            claim.put("likes",article.getLikes());
-            claim.put("state",article.getIsPublish());
-            claim.put("createTime", article.getCreateTime().toString().replace("T","/"));
-            claim.put("modifyTime", article.getModifyTime().toString().replace("T","/"));
-            String jwt = JwtUtils.generateJwtNoExp(claim);
 
-            articleCategoryJwt.add(jwt);
+        if (pageNum == 0) {
+            List<article> articles = aService.getArticles(u.getUserUUID());
+            for (article article : articles) {
+                Map<String, Object> claim = getArticleMap(article);
+                String jwt = JwtUtils.generateJwtNoExp(claim);
+
+                articleCategoryJwt.add(jwt);
+            }
+            ;
+            return Result.success(articleCategoryJwt);
         }
 
-        return Result.success(articleCategoryJwt);
+        if (pageSize != 0) {
+            pageBean pagebean = aService.getArticlesSelected(pageNum, pageSize, u.getUserUUID(), category, state);
+            var rows = pagebean.getRows();
+            for (Object row : rows) {
+                Map<String, Object> claim = getArticleMap((article) row);
+                String jwt = JwtUtils.generateJwtNoExp(claim);
+
+                articleCategoryJwt.add(jwt);
+            }
+
+            articleCategoryJwt.add(String.valueOf(pagebean.getTotal()));
+            return Result.success(articleCategoryJwt);
+        }
+        return Result.error("unKnowError");
     }
 
     @PostMapping("/addNew")
@@ -83,5 +105,26 @@ public class articleController {
         List<String> categories = aService.getArticleCategory(u.getUserUUID());
 
         return Result.success(categories);
+    }
+
+    @PostMapping
+    public Result publishArticle(@RequestHeader HttpHeaders headers, @RequestBody article article, @RequestBody MultipartFile image) throws IOException, ClientException {
+        log.info("上传图片:{}",image.getOriginalFilename());
+        aliOSSUtils.setBucketName("image-container");
+        article.setCoverImage(aliOSSUtils.upload(image));
+        return Result.success();
+    }
+
+    private static Map<String, Object> getArticleMap(article article) {
+        Map<String, Object> claim = new HashMap<>();
+        claim.put("articleUID", article.getArticleUID());
+        claim.put("title", article.getTitle());
+        claim.put("description", article.getDescription());
+        claim.put("category", article.getCategory());
+        claim.put("likes", article.getLikes());
+        claim.put("state", article.getIsPublish());
+        claim.put("createTime", article.getCreateTime().toString().replace("T", "/"));
+        claim.put("modifyTime", article.getModifyTime().toString().replace("T", "/"));
+        return claim;
     }
 }
