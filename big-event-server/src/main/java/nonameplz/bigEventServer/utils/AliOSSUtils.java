@@ -39,7 +39,7 @@ public class AliOSSUtils {
         // 避免文件覆盖
         String originalFilename = file.getOriginalFilename();
         assert originalFilename != null;
-        String fileName = dir + UUID.randomUUID().toString() + originalFilename.substring(originalFilename.lastIndexOf("."));
+        String fileName = dir + UUID.randomUUID() + originalFilename.substring(originalFilename.lastIndexOf("."));
 
         // 创建OSSClient实例
         OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);

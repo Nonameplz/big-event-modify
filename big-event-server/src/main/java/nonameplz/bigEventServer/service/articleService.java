@@ -8,23 +8,23 @@ import java.util.Map;
 
 public interface articleService {
 
-    public List<article> getArticles(String userUUID);
+    List<article> getArticles(String userUUID);
 
-    public pageBean getArticlesSelected(Integer pageNum, Integer pageSize, String userUUID, String category, String state);
+    pageBean getArticlesSelected(Integer pageNum, Integer pageSize, String userUUID, String category, String state);
 
-    public void addArticle(String userUUID, article article);
+    void addArticle(String userUUID, article article);
 
-    public void updateArticle(String userUUID, article article);
+    void updateArticle(String userUUID, article article);
 
-    public void deleteArticle(String userUUID, String articleUID);
+    void deleteArticle(String userUUID, String articleUID);
 
-    public List<String> getArticleCategory(String userUUID);
+    List<String> getArticleCategory(String userUUID);
 
-    public void publishArticle(String userUUID, String title, String category, String description, String coverImage, String content, String state);
+    void publishArticle(String userUUID, String title, String category, String description, String coverImage, String content, String state);
 
-    public void updatePublishArticle(String userUUID, String articleUID, String title, String category, String description, String coverImage, String content, String state);
+    void updatePublishArticle(String userUUID, String articleUID, String title, String category, String description, String coverImage, String content, String state);
 
-    public Map<String, Object> getCoverImgAndContent(String articleUID);
+    Map<String, Object> getCoverImgAndContent(String articleUID);
 
-    public String getCoverImgUrl(String articleUID);
+    String getCoverImgUrl(String articleUID);
 }

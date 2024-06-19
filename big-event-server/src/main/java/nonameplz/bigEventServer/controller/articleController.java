@@ -1,6 +1,5 @@
 package nonameplz.bigEventServer.controller;
 
-import com.aliyuncs.exceptions.ClientException;
 import lombok.extern.slf4j.Slf4j;
 import nonameplz.bigEventServer.pojo.Result;
 import nonameplz.bigEventServer.pojo.article;
@@ -15,9 +14,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.awt.print.PrinterException;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -56,7 +53,6 @@ public class articleController {
 
                 articleCategoryJwt.add(jwt);
             }
-            ;
             return Result.success(articleCategoryJwt);
         }
 
@@ -141,7 +137,7 @@ public class articleController {
                                        @RequestParam("cover_image") Object cover_image,
                                        @RequestParam("content") String content,
                                        @RequestParam("state") String state) {
-        String url = null;
+        String url;
         try {
             MultipartFile uploadImage = (MultipartFile) cover_image;
             String dir = "img-cover/";

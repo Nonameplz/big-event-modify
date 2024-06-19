@@ -4,19 +4,19 @@ import nonameplz.bigEventServer.pojo.token;
 import nonameplz.bigEventServer.pojo.user;
 
 public interface userService {
-    public boolean register(user u);
+    boolean register(user u);
 
-    public user login(user u);
+    user login(user u);
 
-    public token getUserToken(user u);
+    token getUserToken(user u);
 
-    public user getUserByToken(String token);
+    user getUserByToken(String token);
 
-    public String getUserUUID(String token);
+    String getUserUUID(String token);
 
-    public void saveUserToken(token t);
+    void saveUserToken(token t);
 
-    public void updateUserToken(token t);
+    void updateUserToken(token t);
 
-    public boolean checkToken(String token);
+    boolean checkToken(String token);
 }

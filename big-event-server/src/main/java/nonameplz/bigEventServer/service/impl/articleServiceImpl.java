@@ -10,7 +10,6 @@ import nonameplz.bigEventServer.utils.randomStringGetter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,7 +74,7 @@ public class articleServiceImpl implements articleService {
     @Override
     public Map<String, Object> getCoverImgAndContent(String articleUID) {
         article contentAttribute = aMapper.getCoverImgAndContent(articleUID);
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         map.put("coverImg","");
         map.put("content","");
         if (contentAttribute != null) {

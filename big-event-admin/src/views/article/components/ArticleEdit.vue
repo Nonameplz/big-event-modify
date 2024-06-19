@@ -4,7 +4,11 @@ import ChannelSelect from '@/views/article/components/ChannelSelect.vue'
 import { Plus } from '@element-plus/icons-vue'
 import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
-import { artPublishService, artUpdateService, getCoverImgAndContent } from '@/api/article.js'
+import {
+  artPublishService,
+  artUpdateService,
+  getCoverImgAndContent
+} from '@/api/article.js'
 import { ElMessage } from 'element-plus'
 
 const visibleDrawer = ref(false)
