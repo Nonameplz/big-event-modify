@@ -10,7 +10,10 @@ import nonameplz.bigEventServer.utils.randomStringGetter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class articleServiceImpl implements articleService {
@@ -55,6 +58,43 @@ public class articleServiceImpl implements articleService {
 
         aMapper.publishArticle(article);
     }
+
+    @Override
+    public void updatePublishArticle(String userUUID, String articleUID, String title, String category, String description, String coverImage, String content, String state) {
+        article article = aMapper.getArticle(articleUID);
+        article.setTitle(title);
+        article.setCategory(category);
+        article.setDescription(description);
+        article.setCoverImage(coverImage);
+        article.setContent(content);
+        article.setIsPublish(state.equals("已发布")?1:0);
+
+        aMapper.updatePublishArticle(article);
+    }
+
+    @Override
+    public Map<String, Object> getCoverImgAndContent(String articleUID) {
+        article contentAttribute = aMapper.getCoverImgAndContent(articleUID);
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("coverImg","");
+        map.put("content","");
+        if (contentAttribute != null) {
+            if (contentAttribute.getCoverImage() != null) {
+                map.put("coverImg",contentAttribute.getCoverImage());
+            }
+            if (contentAttribute.getContent() != null) {
+                map.put("content", contentAttribute.getContent());
+            }
+        }
+
+        return map;
+    }
+
+    @Override
+    public String getCoverImgUrl(String articleUID) {
+        return aMapper.getCoverImgUrl(articleUID);
+    }
+
 
     @Override
     public void addArticle(String userUUID, article article) {

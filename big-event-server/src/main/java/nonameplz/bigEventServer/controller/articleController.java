@@ -15,7 +15,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.awt.print.PrinterException;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -118,11 +120,46 @@ public class articleController {
     ) throws IOException {
         log.info("上传图片:{}", cover_image.getOriginalFilename());
         String dir = "img-cover/";
-        String url = aliOSSUtils.upload(cover_image, dir);
-        log.info(url);
-        log.info("{}", url.length());
+        String url = aliOSSUtils.upload(cover_image, dir, null);
 
         aService.publishArticle(uService.getUserByToken(headers.getFirst("Authorization")).getUserUUID(), title, category, description, url, content, state);
+        return Result.success();
+    }
+
+    @GetMapping("/getArticle")
+    public Result getCoverImgAndContent(@RequestParam String articleUID) {
+        Map<String, Object> claim = aService.getCoverImgAndContent(articleUID);
+        return Result.success(claim);
+    }
+
+    @PutMapping("/updating")
+    public Result updatePublishArticle(@RequestHeader HttpHeaders headers,
+                                       @RequestParam("articleUID") String articleUID,
+                                       @RequestParam("title") String title,
+                                       @RequestParam("category") String category,
+                                       @RequestParam("description") String description,
+                                       @RequestParam("cover_image") Object cover_image,
+                                       @RequestParam("content") String content,
+                                       @RequestParam("state") String state) {
+        String url = null;
+        try {
+            MultipartFile uploadImage = (MultipartFile) cover_image;
+            String dir = "img-cover/";
+            url = aliOSSUtils.upload(uploadImage, dir, aService.getCoverImgUrl(articleUID));
+        } catch (Exception e) {
+            log.info("不涉及封面修改");
+            url = cover_image.toString();
+        }
+        aService.updatePublishArticle(
+                uService.getUserUUID(headers.getFirst("Authorization")),
+                articleUID,
+                title,
+                category,
+                description,
+                url,
+                content,
+                state
+        );
         return Result.success();
     }
 

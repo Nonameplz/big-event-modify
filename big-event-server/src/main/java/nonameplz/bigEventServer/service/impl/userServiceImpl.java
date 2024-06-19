@@ -48,6 +48,11 @@ public class userServiceImpl implements userService {
     }
 
     @Override
+    public String getUserUUID(String token) {
+        return tMapper.getUserUUIDByToken(token);
+    }
+
+    @Override
     public void saveUserToken(token t) {
         tMapper.saveUserToken(t);
     }

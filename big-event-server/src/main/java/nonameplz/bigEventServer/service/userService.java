@@ -12,6 +12,8 @@ public interface userService {
 
     public user getUserByToken(String token);
 
+    public String getUserUUID(String token);
+
     public void saveUserToken(token t);
 
     public void updateUserToken(token t);

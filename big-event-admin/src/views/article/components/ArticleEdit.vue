@@ -4,7 +4,7 @@ import ChannelSelect from '@/views/article/components/ChannelSelect.vue'
 import { Plus } from '@element-plus/icons-vue'
 import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
-import { artPublishService } from '@/api/article.js'
+import { artPublishService, artUpdateService, getCoverImgAndContent } from '@/api/article.js'
 import { ElMessage } from 'element-plus'
 
 const visibleDrawer = ref(false)
@@ -53,14 +53,20 @@ const onUploadFile = (uploadFile) => {
   formModel.value.cover_image = uploadFile.raw
 }
 
-const open = (row) => {
+const open = async (row) => {
   visibleDrawer.value = true
   formModel.value = { ...row }
-  if (!row.articleUID) {
-    formModel.value.cover_Image = ''
+  if (!formModel.value.articleUID) {
+    formModel.value.cover_image = ''
     formModel.value.content = ''
+    imgUrl.value = ''
+  } else {
+    const res = await getCoverImgAndContent(formModel.value.articleUID)
+    formModel.value.cover_image = res.data.coverImg
+    formModel.value.content = res.data.content
+    editorRef.value.setHTML(formModel.value.content)
+    imgUrl.value = formModel.value.cover_image
   }
-  imgUrl.value = ''
 }
 
 const emit = defineEmits(['success'])
@@ -77,7 +83,10 @@ const onPublish = async (state) => {
   }
 
   if (formModel.value.articleUID) {
-    console.log('编辑操作')
+    await artUpdateService(formData)
+    ElMessage.success('修改成功')
+    visibleDrawer.value = false
+    emit('success', 'update')
   } else {
     // 添加请求
     await artPublishService(formData)

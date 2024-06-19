@@ -17,3 +17,9 @@ export const artDelChannelService = (articleUID) =>
   })
 
 export const artPublishService = (data) => request.post('/my/article/add', data)
+
+export const getCoverImgAndContent = (articleUID) =>
+  request.get('my/article/getArticle', { params: { articleUID } })
+
+export const artUpdateService = (data) =>
+  request.put('my/article/updating', data)

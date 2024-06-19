@@ -24,4 +24,7 @@ public interface tokenMapper {
 
     @Select("select * from big_event_database.users where userUUID = (select userUUID from big_event_database.token where token = #{token})")
     user getUserByToken(String token);
+
+    @Select("select userUUID from big_event_database.token where token = #{token}")
+    String getUserUUIDByToken(String token);
 }

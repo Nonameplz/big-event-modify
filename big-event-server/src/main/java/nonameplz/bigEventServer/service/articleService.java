@@ -4,6 +4,7 @@ import nonameplz.bigEventServer.pojo.article;
 import nonameplz.bigEventServer.pojo.pageBean;
 
 import java.util.List;
+import java.util.Map;
 
 public interface articleService {
 
@@ -20,4 +21,10 @@ public interface articleService {
     public List<String> getArticleCategory(String userUUID);
 
     public void publishArticle(String userUUID, String title, String category, String description, String coverImage, String content, String state);
+
+    public void updatePublishArticle(String userUUID, String articleUID, String title, String category, String description, String coverImage, String content, String state);
+
+    public Map<String, Object> getCoverImgAndContent(String articleUID);
+
+    public String getCoverImgUrl(String articleUID);
 }

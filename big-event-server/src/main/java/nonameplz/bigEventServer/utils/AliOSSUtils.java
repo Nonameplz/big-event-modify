@@ -32,7 +32,7 @@ public class AliOSSUtils {
     /**
      * 实现上传图片到OSS
      */
-    public String upload(MultipartFile file, String dir) throws IOException {
+    public String upload(MultipartFile file, String dir, String oldUrl) throws IOException {
         // 获取上传的文件的输入流
         InputStream inputStream = file.getInputStream();
 
@@ -47,6 +47,9 @@ public class AliOSSUtils {
         try {
             // 上传文件到OSS
             ossClient.putObject(bucketName, fileName, inputStream);
+            if (oldUrl != null) {
+                ossClient.deleteObject(bucketName, oldUrl.split(dir)[1]);
+            }
         } catch (OSSException oe) {
             System.out.println("Caught an OSSException, which means your request made it to OSS, "
                     + "but was rejected with an error response for some reason.");
